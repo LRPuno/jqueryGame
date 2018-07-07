@@ -1,0 +1,19 @@
+body, html{
+    height: 100%;
+}
+
+body {
+    background-color: papayawhip;
+}
+
+.card {
+    margin: 0 auto; /* Added */
+    float: none; /* Added */
+    margin-bottom: 10px; /* Added */
+}
+
+.cloudenemycard, .lelouchenemycard, .yagamienemycard, .yugienemycard {
+    text-align: center;
+    background-color: black;
+    color: white;
+}
