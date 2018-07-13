@@ -1,9 +1,11 @@
 body, html{
     height: 100%;
-}
-
-body {
     background-color: papayawhip;
+    background-image: url("../images/sky.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: auto;
 }
 
 .card {

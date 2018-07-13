@@ -1,24 +1,23 @@
 // Health of all the cards of heroes and enemies.
-var cloudhealth=500;
-var lelouchhealth=600;
-var yagamihealth=700;
-var yugihealth=800
+var cloudhealth=650;
+var lelouchhealth=700;
+var yagamihealth=750;
+var yugihealth=850;
 
 // Attack power of the hero and enemy.
-var baselineattackpower=5; //The hero you picked's attack power (which will increase as the game goes on)
-var cloudenemyattack=20;
-var lelouchenemyattack=30;
-var yagamienemyattack=45;
-var yugienemyattack=50;
+var baselineattackpower=10; //The hero you picked's attack power (which will increase as the game goes on)
+var cloudenemyattack=30;
+var lelouchenemyattack=35;
+var yagamienemyattack=40;
+var yugienemyattack=45;
 
-
-// Booleans to trigger code when you pick a hero.
+// Booleans to trigger code when you pick a hero. To make sure the attack only correlates to one hero and enemy pair.
 var cloudherohealth=false;
 var lelouchherohealth=false;
 var yagamiherohealth=false;
 var yugiherohealth=false;
 
-// Booleans to trigger code when you pick an enemy.
+// Booleans to trigger code when you pick an enemy.To make sure the attack only correlates to one hero and enemy pair.
 var cloudenemyhealth=false;
 var lelouchenemyhealth=false;
 var yagamienemyhealth=false;
@@ -32,18 +31,18 @@ var yugienemywin=false;
 
 $(document).ready(function() {
   
+    // Hides the enemy cards and restart button till they are called upon based on certain conditions.
     $(".hiddencontent").hide();
     $(".hiddenrestart").hide();
 
-    
+    // Displays the health of the hero and enemy cards in the card box.
     $(".displaycloudhealth").text(cloudhealth);
     $(".displaylelouchhealth").text(lelouchhealth);
     $(".displayyagamihealth").text(yagamihealth);
     $(".displayyugihealth").text(yugihealth);
     
-
+    // Buttons to click which hero you are picking and also formats the look of the game.
     $(".cloudherobtn").on("click", function() {
-        console.log("This works!");
         $(".charactertop").text("Your Hero!");
         $("#enemytitle").text("Now Pick Your Rival!");
         $(".lelouchherocard, .yagamiherocard, .yugiherocard").hide();
@@ -55,7 +54,6 @@ $(document).ready(function() {
     });
 
     $(".lelouchherobtn").on("click", function() {
-        console.log("This works!");
         $(".leftappend").append($(".lelouchherocard"));
         $(".charactertop").text("Your Hero!");
         $("#enemytitle").text("Now Pick Your Rival!");
@@ -68,7 +66,6 @@ $(document).ready(function() {
     });
 
     $(".yagamiherobtn").on("click", function() {
-        console.log("This works!");
         $(".leftappend").append($(".yagamiherocard"));
         $(".charactertop").text("Your Hero!");
         $("#enemytitle").text("Now Pick Your Rival!");
@@ -81,7 +78,6 @@ $(document).ready(function() {
     });
 
     $(".yugiherobtn").on("click", function() {
-        console.log("This works!");
         $(".leftappend").append($(".yugiherocard"));
         $(".charactertop").text("Your Hero!");
         $("#enemytitle").text("Now Pick Your Rival!");
@@ -93,7 +89,7 @@ $(document).ready(function() {
         yugiherohealth=true;
     });
 
-    // Enemy Buttons and Cards
+    // Buttons to pick the enemy cards to match with a hero.
     $(".cloudenemybtn").on("click", function () {
         $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").hide();
         $(".mainenemyholder").append($(".cloudenemycard"));
@@ -118,333 +114,348 @@ $(document).ready(function() {
         yugienemyhealth=true;
     });
 
+    //Function for when the enemy dies which resets the picking of enemies.
+    function emptyEverything () {
+        $(".mainenemyholder").empty();
+        $("#herofight").empty();
+        $("#enemyfight").empty();
+        $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+    }
+
+    // Functions for when the hero dies.
+    function HeroDead () {
+        $(".hiddenrestart").show();
+        $(".battlestats").html("<h2>"+"You are not the protagonist of this anime!"+"</h2>").addClass("text-danger").css("font-size","2rem");
+        $("#enemyDefeat").text("You Have Been Defeated Side Character!")
+    }
+
+    // Function for when you "tie" the game.
+    function tieGame () {
+        $(".hiddenrestart").show();
+        $(".battlestats").html("<h2>"+"Your Sacrifice was in Vain!"+"</h2>").addClass("text-danger").css("font-size","2rem");
+        $("#enemyDefeat").text("You Still Lose!");
+    }
+
     //Attack Button
     $(".attack").on("click", function() {
 
-        
         // Code Base if Cloud Strife is the Hero
         if (cloudherohealth && lelouchenemyhealth) {
+            baselineattackpower+=20;
             $("#herofight").text("Attacked Lelouch For "+baselineattackpower);
             $("#enemyfight").text("Lelouch Attacked For " +lelouchenemyattack);
-            baselineattackpower=baselineattackpower+5;
-            cloudhealth=cloudhealth-lelouchenemyattack;
-            lelouchhealth=lelouchhealth-baselineattackpower;
+            cloudhealth-=lelouchenemyattack;
+            lelouchhealth-=baselineattackpower;
             $(".displaycloudhealth").text(cloudhealth);
             $(".displaylelouchhealth").text(lelouchhealth);
-            if (lelouchhealth<=0) {
-                lelouchenemyhealth=false;
-                lelouchenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (cloudhealth<=0 && lelouchhealth<=0) {
+                cloudherohealth=false;
+                tieGame();
             }
             else if (cloudhealth<=0) {
-                $(".hiddenrestart").show();
                 cloudherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
             }
-            console.log(cloudhealth);
+            else if (lelouchhealth<=0) {
+                lelouchenemyhealth=false;
+                lelouchenemywin=true;
+                emptyEverything();
+            }
         }
 
         else if (cloudherohealth && yagamienemyhealth) {
+            baselineattackpower+=15;
             $("#herofight").text("Attacked Light Yagami For "+baselineattackpower);
             $("#enemyfight").text("Light Yagami Attacked For " +yagamienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            cloudhealth=cloudhealth-yagamienemyattack;
-            yagamihealth=yagamihealth-baselineattackpower;
+            cloudhealth-=yagamienemyattack
+            yagamihealth-=baselineattackpower;
             $(".displaycloudhealth").text(cloudhealth);
             $(".displayyagamihealth").text(yagamihealth);
-            if (yagamihealth<=0) {
-                yagamienemyhealth=false;
-                yagamienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (cloudhealth <=0 && yagamihealth<=0) {
+                cloudherohealth=false;
+                tieGame();
             }
             else if (cloudhealth<=0) {
-                $(".hiddenrestart").show();
                 cloudherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yagamihealth<=0) {
+                yagamienemyhealth=false;
+                yagamienemywin=true;
+                emptyEverything();
             }
         }
 
         else if (cloudherohealth && yugienemyhealth) {
+            baselineattackpower+=11;
             $("#herofight").text("Attacked Yugi Moto For "+baselineattackpower);
             $("#enemyfight").text("Yugi Moto Attacked For " +yugienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            cloudhealth=cloudhealth-yugienemyattack;
-            yugihealth=yugihealth-baselineattackpower;
+            cloudhealth-=yugienemyattack;
+            yugihealth-=baselineattackpower;
             $(".displaycloudhealth").text(cloudhealth);
             $(".displayyugihealth").text(yugihealth);
-            if (yugihealth<=0) {
-                yugienemyhealth=false;
-                yugienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (cloudhealth <=0 && yugihealth<=0) {
+                cloudherohealth=false;
+                tieGame();
             }
             else if (cloudhealth<=0) {
-                $(".hiddenrestart").show();
                 cloudherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yugihealth<=0) {
+                yugienemyhealth=false;
+                yugienemywin=true;
+                emptyEverything();
             }
         }
 
         //Code Base if Lelouch is the Hero
         if (lelouchherohealth && cloudenemyhealth) {
+            baselineattackpower+=12;
             $("#herofight").text("Attacked Cloud Strife For "+baselineattackpower);
             $("#enemyfight").text("Cloud Strife Attacked For " +cloudenemyattack);
-            baselineattackpower=baselineattackpower+15;
-            lelouchhealth=lelouchhealth-cloudenemyattack;
-            cloudhealth=cloudhealth-baselineattackpower;
+            lelouchhealth-=cloudenemyattack;
+            cloudhealth-=baselineattackpower;
             $(".displaylelouchhealth").text(lelouchhealth);
             $(".displaycloudhealth").text(cloudhealth);
-            if (cloudhealth<=0) {
-                cloudenemyhealth=false;
-                cloudenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (lelouchhealth<=0 && cloudhealth<=0) {
+                lelouchherohealth=false;
+                tieGame();
             }
             else if (lelouchhealth<=0) {
-                $(".hiddenrestart").show();
                 lelouchherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
             }
-
+            else if (cloudhealth<=0) {
+                cloudenemyhealth=false;
+                cloudenemywin=true;
+                emptyEverything();
+            }
         }
 
         else if (lelouchherohealth && yagamienemyhealth) {
+            baselineattackpower+=12;
             $("#herofight").text("Attacked Light Yagami For "+baselineattackpower);
             $("#enemyfight").text("Light Yagami Attacked For " +yagamienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            lelouchhealth=lelouchhealth-yagamienemyattack;
-            yagamihealth=yagamihealth-baselineattackpower;
+            lelouchhealth-=yagamienemyattack;
+            yagamihealth-=baselineattackpower;
             $(".displaylelouchhealth").text(lelouchhealth);
             $(".displayyagamihealth").text(yagamihealth);
-            if (yagamihealth<=0) {
-                yagamienemyhealth=false;
-                yagamienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (lelouchhealth<=0 && yagamihealth<=0) {
+                lelouchherohealth=false;
+                tieGame();
             }
             else if (lelouchhealth<=0) {
-                $(".hiddenrestart").show();
                 lelouchherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yagamihealth<=0) {
+                yagamienemyhealth=false;
+                yagamienemywin=true;
+                emptyEverything();
             }
         }
 
         else if (lelouchherohealth && yugienemyhealth) {
+            baselineattackpower+=11;
             $("#herofight").text("Attacked Yugi Moto For "+baselineattackpower);
             $("#enemyfight").text("Yugi Moto Attacked For " +yugienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            lelouchhealth=lelouchhealth-yugienemyattack;
-            yugihealth=yugihealth-baselineattackpower;
+            lelouchhealth-=yugienemyattack;
+            yugihealth-=baselineattackpower;
             $(".displaylelouchhealth").text(lelouchhealth);
             $(".displayyugihealth").text(yugihealth);
-            if (yugihealth<=0) {
-                yugienemyhealth=false;
-                yugienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (lelouchhealth<=0 && yugihealth<=0) {
+                lelouchherohealth=false;
+                tieGame();
             }
             else if (lelouchhealth<=0) {
-                $(".hiddenrestart").show();
                 lelouchherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yugihealth<=0) {
+                yugienemyhealth=false;
+                yugienemywin=true;
+                emptyEverything();
             }
         }
 
         //Code base if Light Yagami is picked as the hero.
         if (yagamiherohealth && cloudenemyhealth) {
+            baselineattackpower+=14;
             $("#herofight").text("Attacked Cloud Strife For "+baselineattackpower);
             $("#enemyfight").text("Cloud Strife Attacked For " +cloudenemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yagamihealth=yagamihealth-cloudenemyattack;
-            cloudhealth=cloudhealth-baselineattackpower;
+            yagamihealth-=cloudenemyattack;
+            cloudhealth-=baselineattackpower;
             $(".displayyagamihealth").text(yagamihealth);
             $(".displaycloudhealth").text(cloudhealth);
-            if (cloudhealth<=0) {
-                cloudenemyhealth=false;
-                cloudenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yagamihealth<=0 && cloudhealth<=0) {
+                yagamiherohealth=false;
+                tieGame();
             }
             else if (yagamihealth<=0) {
-                $(".hiddenrestart").show();
                 yagamiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
             }
-
+            else if (cloudhealth<=0) {
+                cloudenemyhealth=false;
+                cloudenemywin=true;
+                emptyEverything();
+            }
         }
 
         else if (yagamiherohealth && lelouchenemyhealth) {
+            baselineattackpower+=9;
             $("#herofight").text("Attacked Lelouch For "+baselineattackpower);
             $("#enemyfight").text("Lelouch Attacked For " +lelouchenemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yagamihealth=yagamihealth-lelouchenemyattack;
-            lelouchhealth=lelouchhealth-baselineattackpower;
+            yagamihealth-=lelouchenemyattack;
+            lelouchhealth-=baselineattackpower;
             $(".displayyagamihealth").text(yagamihealth);
             $(".displaylelouchhealth").text(lelouchhealth);
-            if (lelouchhealth<=0) {
-                lelouchenemyhealth=false;
-                lelouchenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yagamihealth<=0 && lelouchhealth<=0) {
+                yagamiherohealth=false;
+                tieGame();
             }
             else if (yagamihealth<=0) {
-                $(".hiddenrestart").show();
                 yagamiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (lelouchhealth<=0) {
+                lelouchenemyhealth=false;
+                lelouchenemywin=true;
+                emptyEverything();
             }
         }
 
         else if (yagamiherohealth && yugienemyhealth) {
+            baselineattackpower+=10;
             $("#herofight").text("Attacked Yugi Moto For "+baselineattackpower);
             $("#enemyfight").text("Yugi Moto Attacked For " +yugienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yagamihealth=yagamihealth-yugienemyattack;
-            yugihealth=yugihealth-baselineattackpower;
+            yagamihealth-=yugienemyattack;
+            yugihealth-=baselineattackpower;
             $(".displayyagamihealth").text(yagamihealth);
             $(".displayyugihealth").text(yugihealth);
-            if (yugihealth<=0) {
-                yugienemyhealth=false;
-                yugienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yagamihealth<=0 && yugihealth) {
+                yagamiherohealth=false;
+                tieGame();
             }
             else if (yagamihealth<=0) {
-                $(".hiddenrestart").show();
                 yagamiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yugihealth<=0) {
+                yugienemyhealth=false;
+                yugienemywin=true;
+                emptyEverything();
             }
         }
 
         //Code Base for when Yugi Moto is picked as the hero.
 
         if (yugiherohealth && cloudenemyhealth) {
+            baselineattackpower+=9;
             $("#herofight").text("Attacked Cloud Strife For "+baselineattackpower);
             $("#enemyfight").text("Cloud Strife Attacked For " +cloudenemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yugihealth=yugihealth-cloudenemyattack;
-            cloudhealth=cloudhealth-baselineattackpower;
+            yugihealth-=cloudenemyattack;
+            cloudhealth-=baselineattackpower;
             $(".displayyugihealth").text(yugihealth);
             $(".displaycloudhealth").text(cloudhealth);
-            if (cloudhealth<=0) {
-                cloudenemyhealth=false;
-                cloudenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yugihealth<=0 && cloudhealth<=0) {
+                yugiherohealth=false;
+                tieGame();
             }
             else if (yugihealth<=0) {
-                $(".hiddenrestart").show();
                 yugiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
             }
-
+            else if (cloudhealth<=0) {
+                cloudenemyhealth=false;
+                cloudenemywin=true;
+                emptyEverything();
+            }
         }
 
         else if (yugiherohealth && lelouchenemyhealth) {
+            baselineattackpower+=7;
             $("#herofight").text("Attacked Lelouch For "+baselineattackpower);
             $("#enemyfight").text("Lelouch Attacked For " +lelouchenemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yugihealth=yugihealth-lelouchenemyattack;
-            lelouchhealth=lelouchhealth-baselineattackpower;
+            yugihealth-=lelouchenemyattack;
+            lelouchhealth-=baselineattackpower;
             $(".displayyugihealth").text(yugihealth);
             $(".displaylelouchhealth").text(lelouchhealth);
-            if (lelouchhealth<=0) {
-                lelouchenemyhealth=false;
-                lelouchenemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yugihealth<=0 && lelouchhealth<=0) {
+                yugiherohealth=false;
+                tieGame();
             }
             else if (yugihealth<=0) {
-                $(".hiddenrestart").show();
                 yugiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (lelouchhealth<=0) {
+                lelouchenemyhealth=false;
+                lelouchenemywin=true;
+                emptyEverything();
             }
         }
 
         else if (yugiherohealth && yagamienemyhealth) {
+            baselineattackpower+=5;
             $("#herofight").text("Attacked Light Yagami For "+baselineattackpower);
             $("#enemyfight").text("Light Yagami Attacked For " +yagamienemyattack);
-            baselineattackpower=baselineattackpower+15;
-            yugihealth=yugihealth-yagamienemyattack;
-            yagamihealth=yagamihealth-baselineattackpower;
+            yugihealth-=yagamienemyattack;
+            yagamihealth-=baselineattackpower;
             $(".displayyugihealth").text(yugihealth);
             $(".displayyagamihealth").text(yagamihealth);
-            if (yagamihealth<=0) {
-                yagamienemyhealth=false;
-                yagamienemywin=true;
-                $(".mainenemyholder").empty();
-                $("#herofight").empty();
-                $("#enemyfight").empty();
-                $(".cloudenemybtn, .lelouchenemybtn, .yagamienemybtn, .yugienemybtn").show();
+            if (yugihealth<=0 && yagamihealth<=0) {
+                yugiherohealth=false;
+                tieGame();
             }
             else if (yugihealth<=0) {
-                $(".hiddenrestart").show();
                 yugiherohealth=false;
-                $(".battlestats").text("You are not the protagonist of this anime.");
+                HeroDead();
+            }
+            else if (yagamihealth<=0) {
+                yagamienemyhealth=false;
+                yagamienemywin=true;
+                emptyEverything();
             }
         }
-
-        wincondition();
+        
+        wincondition(); //win condition that is triggered. Function is declared later.
 
         
     });
 
-    //conditions to trigger win scenario
+    //Triggers the win message if you manage to win.
+    function winMessage() {
+        $(".battlestats").text("You are in fact the protagonist of this anime!").addClass("text-success").css("font-size","2rem")
+        $(".hiddenrestart").show();
+        $("#enemyDefeat").text("The Enemies Have Been Defeated!")
+    }
+
+    //conditions to trigger win scenario for each hero.
     function wincondition() {
         if (lelouchenemywin && yagamienemywin && yugienemywin) {
-            $(".battlestats").text("You are in fact the protagonist of this anime!");
-            $(".hiddenrestart").show();
-            console.log("you should get a message")
+            winMessage();
+            //Cloud as the hero
         }
-
         else if (cloudenemywin && yagamienemywin && yugienemywin) {
-            $(".battlestats").text("You are in fact the protagonist of this anime!");
-            $(".hiddenrestart").show();
-            console.log("you should get a message")
+            winMessage();
+            //Lelouch as the hero
         }
-
         else if (cloudenemywin && lelouchenemywin && yugienemywin) {
-            $(".battlestats").text("You are in fact the protagonist of this anime!");
-            $(".hiddenrestart").show();
-            console.log("you should get a message")
+            winMessage();
+            //Light Yagami as the hero
         }
-
         else if (cloudenemywin && lelouchenemywin && yagamienemywin) {
-            $(".battlestats").text("You are in fact the protagonist of this anime!");
-            $(".hiddenrestart").show();
-            console.log("you should get a message")
+            winMessage();
+            //Yugi as the hero
         }
-        
     };
 
-    //restart function that will only show at the end of the game (win or lose)
+    //restart function that will only show at the end of the game (win or lose) but agains is hidden till it's called upon.
     $(".restart").on("click", function() {
         location.reload();
     })
-
 
   });
 

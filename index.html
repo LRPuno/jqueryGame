@@ -10,6 +10,7 @@
 </head>
 <body>
 
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 text-danger text-right">
@@ -93,7 +94,7 @@
                                 <div class="card-body">
                                   <h5 class="card-title">Cloud Strife</h5>
                                   <p class="card-text displaycloudhealth"></p>
-                                  <a href="#" class="cloudenemybtn btn btn-primary">Go somewhere</a>
+                                  <a href="#" class="cloudenemybtn btn btn-danger">Ready to Lose?</a>
                                 </div>
                               </div>
                 </div>
@@ -104,7 +105,7 @@
                                 <div class="card-body">
                                   <h5 class="card-title">Lelouch Lamperouge</h5>
                                   <p class="card-text displaylelouchhealth"></p>
-                                  <a href="#" class="lelouchenemybtn btn btn-primary">Go somewhere</a>
+                                  <a href="#" class="lelouchenemybtn btn btn-danger">A Greater Evil</a>
                                 </div>
                               </div>
                 </div>
@@ -115,7 +116,7 @@
                                 <div class="card-body">
                                   <h5 class="card-title">Light Yagami</h5>
                                   <p class="card-text displayyagamihealth"></p>
-                                  <a href="#" class="yagamienemybtn btn btn-primary">Go somewhere</a>
+                                  <a href="#" class="yagamienemybtn btn btn-danger">Justice is an Illusion</a>
                                 </div>
                               </div>
                 </div>
@@ -126,7 +127,7 @@
                                 <div class="card-body">
                                   <h5 class="card-title">Yagami Moto</h5>
                                   <p class="card-text displayyugihealth"></p>
-                                  <a href="#" class="yugienemybtn btn btn-primary">Go somewhere</a>
+                                  <a href="#" class="yugienemybtn btn btn-danger">Enter the Shadow Realm</a>
                                 </div>
                               </div>
                 </div>
@@ -164,21 +165,22 @@
     <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12 text-danger">
-                    <h2>Enemy</h2>
+                    <h2 id="enemyDefeat">Enemy</h2>
                 </div>
             </div>
     </div>
 
     <div class="container-fluid">
-            <div class="row">
+            <div class="row text-center">
                 <div class="col-sm-6 mainenemyholder">
                 </div>
                 <div class="col-sm-6 battlestats">
-                    <div id="herofight"></div>
-                    <div id="enemyfight"></div>
+                    <div class="text-success" id="herofight"></div>
+                    <div class="text-danger" id="enemyfight"></div>
                 </div>
             </div>
     </div>
+
 
 
 
